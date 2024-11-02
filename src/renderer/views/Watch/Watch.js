@@ -329,9 +329,11 @@ export default defineComponent({
       if (!this.isLoading && player?.hasLoaded && !player?.isPaused()) {
         /** @type {AWClient} */
         const client = this.getAwClient()
+        const _ = require('lodash')
 
         const nowStr = (new Date()).toISOString()
-        const heartbeat = { timestamp: nowStr, duration: 0, data: { title: this.videoTitle, videoId: this.videoId } }
+        const data = { title: this.videoTitle, ..._.pick(this, ['videoId', 'channelId', 'channelName']) }
+        const heartbeat = { timestamp: nowStr, duration: 0, data: data }
         client.heartbeat(this.getAwBucketId(client), 10, heartbeat)
       }
     },
