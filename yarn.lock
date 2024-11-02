@@ -2480,6 +2480,11 @@ available-typed-arrays@^1.0.7:
   dependencies:
     possible-typed-array-names "^1.0.0"
 
+aw-client@^0.4.0:
+  version "0.4.0"
+  resolved "https://registry.yarnpkg.com/aw-client/-/aw-client-0.4.0.tgz#d26ed49acb4ad4dfec58f7f6a984fe19f97da9f0"
+  integrity sha512-rXWtHiB8Dsl+vOE4ob4AD90k8QqJ8dgrbZPYiKIuoVGQFyZxOUbSQA3XUbfgPSelydp3ERn/opbeoPlyB71KnA==
+
 babel-loader@^9.2.1:
   version "9.2.1"
   resolved "https://registry.yarnpkg.com/babel-loader/-/babel-loader-9.2.1.tgz#04c7835db16c246dd19ba0914418f3937797587b"

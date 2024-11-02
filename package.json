@@ -61,6 +61,7 @@
     "@fortawesome/vue-fontawesome": "^2.0.10",
     "@seald-io/nedb": "^4.0.4",
     "autolinker": "^4.0.0",
+    "aw-client": "^0.4.0",
     "electron-context-menu": "^4.0.4",
     "lodash.debounce": "^4.0.8",
     "marked": "^14.1.3",

@@ -12,6 +12,7 @@ import WatchVideoPlaylist from '../../components/watch-video-playlist/watch-vide
 import WatchVideoRecommendations from '../../components/WatchVideoRecommendations/WatchVideoRecommendations.vue'
 import FtAgeRestricted from '../../components/ft-age-restricted/ft-age-restricted.vue'
 import packageDetails from '../../../../package.json'
+import { AWClient } from 'aw-client'
 import {
   buildVTTFileLocally,
   copyToClipboard,
@@ -319,8 +320,35 @@ export default defineComponent({
       }
 
       window.addEventListener('beforeunload', this.handleWatchProgress)
+      this.awWatcherHandle = setInterval(this.awWatcherTrack.bind(this), 5000)
     },
 
+    awWatcherTrack: function () {
+      /** @type {AWClient} */
+      const client = this.getAwClient()
+
+      const nowStr = (new Date()).toISOString()
+      const heartbeat = { timestamp: nowStr, duration: 0, data: { title: this.videoTitle, videoId: this.videoId } }
+      client.heartbeat(this.getAwBucketId(client), 10, heartbeat)
+    },
+    getHostname: function () {
+      if (!this.__hostname) {
+        const os = require('node:os')
+        this.__hostname = os.hostname()
+      }
+      return this.__hostname
+    },
+    getAwClient: function () {
+      if (!this.__awClient) {
+        const client = new AWClient('aw-watcher-freetube')
+        client.ensureBucket(this.getAwBucketId(client), 'curplaying', this.getHostname())
+        this.__awClient = client
+      }
+      return this.__awClient
+    },
+    getAwBucketId: function (client) {
+      return `${client.clientname}-curplaying_${this.getHostname()}`
+    },
     changeTimestamp: function (timestamp) {
       const player = this.$refs.player
 
@@ -1196,8 +1224,8 @@ export default defineComponent({
 
       if (this.manifestSrc === null ||
         ((this.isLive || this.isPostLiveDvr) &&
-        // The WEB HLS manifests only contain combined audio and video files, so we can't do audio only
-        // The IOS HLS manifests have audio-only streams
+          // The WEB HLS manifests only contain combined audio and video files, so we can't do audio only
+          // The IOS HLS manifests have audio-only streams
           this.manifestMimeType === MANIFEST_TYPE_HLS && !this.manifestSrc.includes('/demuxed/1'))) {
         showToast(this.$t('Change Format.Audio formats are not available for this video'))
         return
