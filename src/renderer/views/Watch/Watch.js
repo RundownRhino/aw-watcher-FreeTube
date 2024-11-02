@@ -324,12 +324,16 @@ export default defineComponent({
     },
 
     awWatcherTrack: function () {
-      /** @type {AWClient} */
-      const client = this.getAwClient()
+      const player = this.$refs.player
+      // TODO: Is this a good set of conditions to tell if a video is playing?
+      if (!this.isLoading && player?.hasLoaded && !player?.isPaused()) {
+        /** @type {AWClient} */
+        const client = this.getAwClient()
 
-      const nowStr = (new Date()).toISOString()
-      const heartbeat = { timestamp: nowStr, duration: 0, data: { title: this.videoTitle, videoId: this.videoId } }
-      client.heartbeat(this.getAwBucketId(client), 10, heartbeat)
+        const nowStr = (new Date()).toISOString()
+        const heartbeat = { timestamp: nowStr, duration: 0, data: { title: this.videoTitle, videoId: this.videoId } }
+        client.heartbeat(this.getAwBucketId(client), 10, heartbeat)
+      }
     },
     getHostname: function () {
       if (!this.__hostname) {
